@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Main</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="css\bootstrap.css">
+	<link rel="stylesheet" href="css\bootstrap-grid.css">
+	<link rel="stylesheet" href="css\font-awesome.min.css">
+	<link rel="stylesheet" href="fonts\fontawesome-webfont.ttf">
+	<link rel="stylesheet" type="text/css" href="css\style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+	      
+		  var map;
+		  var geocoder;
+		  function initialize() {
+		  	geocoder = new google.maps.Geocoder();
+		    var latlng = new google.maps.LatLng(56.844249, 53.201262);
+		    var mapOptions = {
+		      zoom: 13,
+		      center: latlng
+		    }
+		    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+		  }
+
+		  function codeAddress(address) {
+		    geocoder.geocode( { 'address': address}, function(results, status) {
+		      if (status == 'OK') {
+		        map.setCenter(results[0].geometry.location);
+		        var marker = new google.maps.Marker({
+		            map: map,
+		            position: results[0].geometry.location
+		        });
+		      } else {
+		        alert('Geocode was not successful for the following reason: ' + status);
+		      }
+		    });
+		  }
+	</script>
+</head>
+<body>
+	<div class="content">
+		<div class="content-contact container">
+			<div class="content-contact-header col-lg-2"><h1>КОНТАКТЫ</h1></div>
+			<div class="content-contact-menu col-lg-3">
+				<ul class="menu">
+					<li class="active"><a href="#mapCont">НА КАРТЕ</a></li>
+					<li class="noActive"><a href="#list">СПИСКОМ</a></li>
+				</ul>
+			</div>
+			<div class="content-contact-line row">
+				<input type="text" name="Name" placeholder="Название" class="inputFirstLine col-lg-4 col-sm-12" required id="name">
+				<input type="text" name="Number" placeholder="Телефон" class="inputFirstLine col-lg-4 col-sm-12" id="number">
+				<input type="email" name="Email" placeholder="E-mail" class="inputFirstLine col-lg-4 col-sm-12" id="email">
+			</div>
+			<div class="content-contact-line row">
+				<input type="text" name="address" placeholder="Адрес" class="input col-lg-10" required id="address">
+				<input type="button" name="add" value="ДОБАВИТЬ" class="button col-lg-2" id="add">
+			</div>
+			<div class="content-contact-line row">
+				<input type="text" name="search" placeholder="Введите название организации" class="input col-lg-10" id="search">
+				<input type="button" name="find" value="ПОИСК" class="button col-lg-2" id="find">
+			</div>
+		</div>
+		<div class="content-info">
+			<div id="mapCont" class="cont visible">
+				<div id="map" class="map"></div>
+			</div>
+			<div id="list" class="content-list cont noVisible">
+				<table class="list col-lg-12" id="listTable">
+				</table>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+	<script> 		
+	    function getInfoFromJSON(){	  
+			$.getJSON( "data.json", function( data ) {
+		    	for (var i = 0; i <= Object.keys(data.data).length; i++) {
+	    			localStorage.setItem('name_'+i,data.data[i].name);
+	    			localStorage.setItem('address_'+i,data.data[i].address);
+	    			localStorage.setItem('number_'+i,data.data[i].phoneNumber);
+	    			localStorage.setItem('email_'+i,data.data[i].email);
+	    		}
+		    });
+		}
+		getInfoFromJSON();
+		$( document ).ready(function($) {
+			initialize();
+			var listCount = localStorage.length/4;
+			for (var i = 0; i < listCount; i++) {
+				$("#listTable").append("<tr id='"+i+"'><td><p class='tName'>"+ localStorage.getItem('name_'+i) +"</p><p>"+ localStorage.getItem('address_'+i) +'</p></td><td><i class="fa fa-phone" aria-hidden="true"></i>'+ localStorage.getItem('number_'+i) +"</td><td>"+ localStorage.getItem('email_'+i) +"</td></tr>");
+					codeAddress(localStorage.getItem('address_'+i));
+			}
+
+			$("#number").mask("+7 (9999) 99-99-99");
+
+			$("#add").click(function(){
+				var name = $("#name").val();
+				var phoneNumber = $("#number").val();
+				var email = $("#email").val();
+				var address = $("#address").val();
+
+				$("#name").val("");
+				$("#number").val("");
+				$("#email").val("");
+				$("#address").val("");
+
+				localStorage.setItem('name_'+listCount,name);
+    			localStorage.setItem('address_'+listCount,address);
+    			localStorage.setItem('number_'+listCount,phoneNumber);
+    			localStorage.setItem('email_'+listCount,email);
+    			listCount++;
+			});
+
+			$("#find").click(function(){
+				var id;
+				var findStr = $("#search").val();
+				$("#search").val("");
+
+				for (var i = 0; i < listCount; i++) {
+					var str = localStorage.getItem('name_'+i);
+					if((str.toLowerCase().indexOf(findStr.toLowerCase()) + 1) > 0){
+						id = i;
+					}
+				}
+
+				for (var i = 0; i <= listCount; i++) {
+					if(i != id){
+						$('tr[id = '+i+']').css({'display':'none'});
+					}
+				}
+			});
+
+			$(".menu li a").click(function(event){
+				event.preventDefault();		
+				$(".menu li").removeClass("active").addClass("noActive");	
+				$(this).parent().removeClass("noActive").addClass("active");
+				$(".cont").removeClass("visible").addClass("noVisible");	
+				var id = $(this).attr("href");		
+				$(id).removeClass("noVisible");	
+				$(id).addClass("visible");
+			});
+		});
+	</script>
+
+
+	<script 
+    	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3ZDZzUmZ0aSTs-IoGHqwLPSlcL6SOBFk&callback=initialize">
+    </script>
+</body>
+</html>

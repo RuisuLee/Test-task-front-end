@@ -1,0 +1,21 @@
+{
+	"data": [
+		{
+			"name": "АО Грация",
+		    "address": "163062, ул. Папанина, 19",
+		    "phoneNumber": "+7 (8182) 61-04-85",
+		    "email": "krasavceva@phrmskl.ru"  
+		},
+		{
+			"name": "ОАО «Метелица»",
+		    "address": "690033, ул. Иртышская, 10а",
+		    "phoneNumber": "+7 (4232) 36-52-61",
+		    "email": "repair@medtehnika.org"  
+		},
+				{
+			"name": "ИП «Петров»",
+		    "address":  "308007, ул. Гагарина, 2а",
+		    "phoneNumber": "+7 (4722) 26-16-79",
+		    "email": "almed@ab.ru"  
+		}
+]}
