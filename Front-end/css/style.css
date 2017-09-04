@@ -67,7 +67,8 @@
 	background-color: #f1f1f1;
 	border: none;
 	font-size: 14px;
-	padding: 17px;
+	padding-right: 17px;
+	padding-left: 17px;
 	clear: both;
 	margin-bottom: 20px;
 }
@@ -77,7 +78,8 @@
 	border: none;
 	font-size: 14px;
 	margin-bottom: 20px;
-	padding: 17px;
+	padding-right: 17px;
+	padding-left: 17px;
 }
 .inputFirstLine:focus::-webkit-input-placeholder {color: transparent;}
 .inputFirstLine:focus::-moz-placeholder          {color: transparent;}
